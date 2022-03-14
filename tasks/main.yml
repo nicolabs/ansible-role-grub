@@ -47,5 +47,22 @@
     - grub_options is defined
     - grub_options | length > 0
 
+
+- name: add options to GRUB_CMDLINE_LINUX_DEFAULT
+  ansible.builtin.replace:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT="((:?(?!{{ item.option }}=?[^s]*).)*?)"$'
+    replace: 'GRUB_CMDLINE_LINUX_DEFAULT="\1 {{ item.option }}{{ "={}".format(item.value) if item.value is defined else "" }}"'
+    validate: /bin/sh %s
+    mode: "0664"
+  loop: "{{ grub_default_options }}"
+  loop_control:
+    label: "{{ item.option }}"
+  notify:
+    - update grub
+  when:
+    - grub_default_options is defined
+    - grub_default_options | length > 0
+
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
