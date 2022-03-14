@@ -3,18 +3,18 @@
 - name: test if grub_timeout is set correctly
   ansible.builtin.assert:
     that:
-      - grub_timeout is defined
       - grub_timeout is number
       - grub_timeout >= 0
     quiet: yes
+  when: grub_timeout is defined
 
 - name: test if grub_recordfail_timeout is set correctly
   ansible.builtin.assert:
     that:
-      - grub_recordfail_timeout is defined
       - grub_recordfail_timeout is number
       - grub_recordfail_timeout >= 0
     quiet: yes
+  when: grub_timeout is defined and grub_recordfail_timeout is defined
 
 - name: test if grub_options is set correctly
   ansible.builtin.assert:
